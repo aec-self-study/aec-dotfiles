@@ -116,16 +116,40 @@ if ! shopt -oq posix; then
   fi
 fi
 
-# CLAIRE WAS HERE
-export BLACK="\033[0;30m"
-export RED="\033[0;31m"
-export GREEN="\033[0;32m"
-export YELLOW="\033[0;33m"
-export BLUE="\033[0;34m"
-export MAGENTA="\033[0;35m"
-export CYAN="\033[0;36m"
-export WHITE="\033[0;37m"
-export PS1="\[$GREEN\]\t \[$BLUE\]\w\[\033[m\]\[$MAGENTA\]\$(__git_ps1)\[$WHITE\]\[$WHITE\] $ "
+# Oriana was here
+export COLOROFF="\[\033[0m\]"
+export BLACK="\[\033[0;30m\]"
+export RED="\[\033[0;31m\]"
+export GREEN="\[\033[0;32m\]"
+export YELLOW="\[\033[0;33m\]"
+export BLUE="\[\033[0;34m\]"
+export MAGENTA="\[\033[0;35m\]"
+export CYAN="\[\033[0;36m\]"
+export WHITE="\[\033[0;37m\]"
+export BOLDRED="\[\033[1;31m\]"
+export BOLDBLUE="\[\033[1;34m\]"
+
+# Codespaces bash prompt theme
+__bash_prompt() {
+    local userpart='`export XIT=$? \
+        && [ ! -z "${GITHUB_USER}" ] && echo -n "'$GREEN'@${GITHUB_USER} " || echo -n "'$GREEN'\u " \
+        && [ "$XIT" -ne "0" ] && echo -n "'$BOLDRED'➜" || echo -n "'$COLOROFF'➜"`'
+    local gitbranch='`\
+        if [ "$(git config --get codespaces-theme.hide-status 2>/dev/null)" != 1 ]; then \
+            export BRANCH=$(git symbolic-ref --short HEAD 2>/dev/null || git rev-parse --short HEAD 2>/dev/null); \
+            if [ "${BRANCH}" != "" ]; then \
+                echo -n "'$CYAN'('$MAGENTA'${BRANCH}" \
+                && if git ls-files --error-unmatch -m --directory --no-empty-directory -o --exclude-standard ":/*" > /dev/null 2>&1; then \
+                        echo -n " '$YELLOW'✗"; \
+                fi \
+                && echo -n "'$CYAN') "; \
+            fi; \
+        fi`'
+    PS1="${userpart} ${BLUE}\w ${gitbranch}${COLOROFF}\$ "
+    unset -f __bash_prompt
+}
+__bash_prompt
+export PROMPT_DIRTRIM=4
 
 # Michael was here
 alias python=python3
@@ -136,3 +160,5 @@ alias python=python3
 # (aside, gcloud got installed at /usr/bin/gcloud)
 
 export PATH="/home/ubuntu/.local/bin:$PATH"
+
+source ~/.git-completion.bash
