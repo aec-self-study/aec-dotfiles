@@ -161,4 +161,5 @@ alias python=python3
 
 export PATH="/home/ubuntu/.local/bin:$PATH"
 
+source ~/.bash_profile
 source ~/.git-completion.bash
